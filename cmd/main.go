@@ -13,14 +13,12 @@ func main() {
 	fmt.Println("App init..")
 
 	r := chi.NewRouter()
-
-	// A good base middleware stack
 	r.Use(middleware.RequestID)
-	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	r.Get("/", home)
+	r.Get("/", yamlGenerator)
+	r.Get("/ping", ping)
 
 	http.ListenAndServe(":8080", r)
 	err := http.ListenAndServe(":9000", r)
