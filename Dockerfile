@@ -5,4 +5,6 @@ RUN apk update && apk upgrade && \
 
 ADD bin/yaml-generator-app-linux-x86_64 /bin/yaml-generator-app
 
+EXPOSE 9000
+
 CMD ["/bin/yaml-generator-app"]
