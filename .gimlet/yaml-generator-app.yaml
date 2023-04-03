@@ -1,6 +1,6 @@
 app: yaml-generator-app
 env: meta
-namespace: default
+namespace: infrastructure
 chart:
   repository: https://chart.onechart.dev
   name: onechart
