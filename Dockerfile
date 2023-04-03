@@ -16,4 +16,6 @@ WORKDIR /
 
 COPY --from=builder /app/build/yaml-generator-app .
 
+EXPOSE 9000
+
 ENTRYPOINT ["./yaml-generator-app"]

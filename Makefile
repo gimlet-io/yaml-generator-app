@@ -9,3 +9,7 @@ format:
 
 build-yaml-generator-app:
 	CGO_ENABLED=0 go build -ldflags $(LDFLAGS) -o build/yaml-generator-app github.com/gimlet-io/yaml-generator-app/cmd
+
+dist-meta:
+	mkdir -p bin
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags $(LDFLAGS) -a -installsuffix cgo -o bin/linux/amd64/yaml-generator-app github.com/gimlet-io/yaml-generator-app/cmd
