@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v2"
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
@@ -20,9 +21,9 @@ func yamlGenerator(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	args := []string{"onechart/onechart"}
+	chartName := "onechart/onechart"
 	client, settings := helmClient()
-	chart, err := loadChart(args, client, settings)
+	chart, err := loadChart(chartName, client, settings)
 	if err != nil {
 		logrus.Errorf("couldn't load chart", err)
 		http.Error(w, http.StatusText(500), 500)
@@ -36,8 +37,15 @@ func yamlGenerator(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	manifestString, err := yaml.Marshal(rel.Manifest)
+	if err != nil {
+		logrus.Errorf("couldn't marshal manifest", err)
+		http.Error(w, http.StatusText(500), 500)
+		return
+	}
+
 	w.WriteHeader(200)
-	w.Write([]byte(rel.Manifest))
+	w.Write(manifestString)
 }
 
 func helmClient() (*action.Install, *helmCLI.EnvSettings) {
@@ -56,8 +64,8 @@ func helmClient() (*action.Install, *helmCLI.EnvSettings) {
 	return client, settings
 }
 
-func loadChart(args []string, client *action.Install, settings *helmCLI.EnvSettings) (*chart.Chart, error) {
-	name, chart, err := client.NameAndChart(args)
+func loadChart(chartName string, client *action.Install, settings *helmCLI.EnvSettings) (*chart.Chart, error) {
+	name, chart, err := client.NameAndChart([]string{chartName})
 	if err != nil {
 		return nil, err
 	}
