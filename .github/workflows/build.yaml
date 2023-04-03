@@ -6,7 +6,6 @@ on:
 
 jobs:
   yaml-generator:
-    dashboard:
     name: 🏗️ Build yaml generator
     runs-on: ubuntu-latest
     needs: test
