@@ -8,7 +8,6 @@ jobs:
   yaml-generator:
     name: 🏗️ Build yaml generator
     runs-on: ubuntu-latest
-    needs: test
     steps:
     - name: Set up Go
       uses: actions/setup-go@v2
