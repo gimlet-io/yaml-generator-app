@@ -1,24 +1,8 @@
-FROM golang:alpine as builder 
+FROM alpine:3.17.1
 
-RUN apk add --no-cache git curl make ca-certificates gcc libtool musl-dev
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash git openssh
 
-RUN mkdir /app
+ADD bin/yaml-generator-app-linux-x86_64 /bin/yaml-generator-app
 
-ADD cmd /app
-ADD go.mod /app
-ADD go.sum /app
-ADD Makefile /app
-
-WORKDIR /app
-
-RUN make build-yaml-generator-app
-
-FROM alpine
-
-WORKDIR /
-
-COPY --from=builder /app/build/yaml-generator-app .
-
-EXPOSE 9000
-
-ENTRYPOINT ["./yaml-generator-app"]
+CMD ["/bin/yaml-generator-app"]
