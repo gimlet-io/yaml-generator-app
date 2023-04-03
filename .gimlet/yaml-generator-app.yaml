@@ -1,0 +1,18 @@
+app: yaml-generator-app
+env: meta
+namespace: default
+chart:
+  repository: https://chart.onechart.dev
+  name: onechart
+  version: 0.38.0
+values:
+  gitRepository: gimlet-io/yaml-generator-app
+  gitSha: '{{ .GITHUB_SHA }}'
+  ingress:
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    host: yaml-generator.gimlet.io
+    tlsEnabled: true
+strategicMergePatches: ""
+json6902Patches: []
+manifests: ""
