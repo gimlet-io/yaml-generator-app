@@ -7,8 +7,5 @@ LDFLAGS = '-s -w -extldflags "-static" -X github.com/gimlet-io/gimlet-cli/pkg/ve
 format:
 	@gofmt -w ${GOFILES}
 
-test:
-	go test -timeout 60s $(shell go list ./... )
-
-build-yaml-generator:
+build-yaml-generator-app:
 	CGO_ENABLED=0 go build -ldflags $(LDFLAGS) -o build/yaml-generator-app github.com/gimlet-io/yaml-generator-app/cmd

@@ -17,10 +17,8 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	r.Get("/", yamlGenerator)
-	r.Get("/ping", ping)
+	r.Post("/", yamlGenerator)
 
-	http.ListenAndServe(":8080", r)
-	err := http.ListenAndServe(":9000", r)
+	err := http.ListenAndServe(":8080", r)
 	log.Error(err)
 }
