@@ -19,6 +19,6 @@ func main() {
 
 	r.Post("/", yamlGenerator)
 
-	err := http.ListenAndServe(":8080", r)
+	err := http.ListenAndServe(":9000", r)
 	log.Error(err)
 }

@@ -6,6 +6,7 @@ chart:
   name: onechart
   version: 0.42.0
 values:
+  containerPort: 9000
   gitRepository: gimlet-io/yaml-generator-app
   gitSha: '{{ .SHA }}'
   image:
