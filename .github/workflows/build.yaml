@@ -5,19 +5,35 @@ on:
       - 'main'
 
 jobs:
-  build:
-    name: 🏗️ Build Yaml Generator
+  yaml-generator:
+    dashboard:
+    name: 🏗️ Build yaml generator
     runs-on: ubuntu-latest
+    needs: test
     steps:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
         go-version: 1.19
+    - id: go-cache-paths
+      run: |
+        echo "::set-output name=go-build::$(go env GOCACHE)"
+        echo "::set-output name=go-mod::$(go env GOMODCACHE)"
     - name: ⬇️ Check out code into the Go module directory
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
       with:
         fetch-depth: 5
+    - name: Go Build Cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.go-cache-paths.outputs.go-build }}
+        key: ${{ runner.os }}-go-build-${{ hashFiles('**/go.sum') }}
+    - name: Go Mod Cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.go-cache-paths.outputs.go-mod }}
+        key: ${{ runner.os }}-go-mod-${{ hashFiles('**/go.sum') }}
     - name: 🏗️ Build Yaml Generator
       run: make build-yaml-generator-app
       env:
-        VERSION: "yaml-generator-build"
+        VERSION: "ci-build"

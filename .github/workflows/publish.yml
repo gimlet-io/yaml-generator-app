@@ -1,4 +1,4 @@
-name: 🚀 Publish Yaml Generator
+name: 🚀 Publish
 
 on:
   push:
@@ -27,7 +27,7 @@ jobs:
         if [[ $GITHUB_REF == refs/tags/* ]]
         then
             tag=${GITHUB_REF##refs/tags/}
-            v=${tag##yaml-generator-}
+            v=${tag##yaml-generator-app-}
             echo "::set-output name=version::$v"
         else
             echo "::set-output name=version::$GITHUB_SHA"
@@ -36,6 +36,18 @@ jobs:
       run: make dist-yaml-generator-app
       env:
         VERSION: ${{ steps.version.outputs.version }}
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Gimlet ${{ steps.version.outputs.version }}
+        draft: false
+        prerelease: false
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
     - name: Login to GitHub Container Registry
@@ -49,7 +61,7 @@ jobs:
       with:
         context: .
         file: Dockerfile
-        platforms: linux/amd64
+        platforms: linux/amd64,linux/arm64/v8
         push: true
         tags: |
           ghcr.io/gimlet-io/yaml-generator-app:${{ steps.version.outputs.version }}
