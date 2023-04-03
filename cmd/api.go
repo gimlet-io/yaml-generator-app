@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/sirupsen/logrus"
@@ -67,13 +68,13 @@ func helmClient() (*action.Install, *helmCLI.EnvSettings) {
 func loadChart(chartName string, client *action.Install, settings *helmCLI.EnvSettings) (*chart.Chart, error) {
 	name, chart, err := client.NameAndChart([]string{chartName})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("cannot get name and chart %s", err)
 	}
 	client.ReleaseName = name
 
 	cp, err := client.ChartPathOptions.LocateChart(chart, settings)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("cannot locate chart %s", err)
 	}
 
 	return loader.Load(cp)
