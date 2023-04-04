@@ -13,3 +13,4 @@ build-yaml-generator-app:
 dist-yaml-generator-app:
 	mkdir -p bin
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags $(LDFLAGS) -a -installsuffix cgo -o bin/linux/amd64/yaml-generator-app github.com/gimlet-io/yaml-generator-app/cmd
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags $(LDFLAGS) -a -installsuffix cgo -o bin/linux/arm64/yaml-generator-app github.com/gimlet-io/yaml-generator-app/cmd
