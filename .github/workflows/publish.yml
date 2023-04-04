@@ -38,22 +38,6 @@ jobs:
       run: make dist-yaml-generator-app
       env:
         VERSION: ${{ steps.version.outputs.version }}
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Yaml Generator app ${{ steps.version.outputs.version }}
-        draft: false
-        prerelease: false
-    - name: 🚀 Upload release binaries
-      uses: alexellis/upload-assets@0.2.2
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      with:
-        asset_paths: '["./bin/yaml-generator-app*"]'
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
     - name: Login to GitHub Container Registry
@@ -69,7 +53,8 @@ jobs:
         file: Dockerfile
         platforms: linux/amd64
         push: true
-        tags: ghcr.io/gimlet-io/gimlet-yaml-generator-app:${{ steps.version.outputs.version }},ghcr.io/gimlet-io/gimlet-yaml-generator-app:latest
+        tags: |
+          ghcr.io/gimlet-io/yaml-generator-app:${{ steps.version.outputs.version }}
     - name: 🚀 Notify Gimlet about new version
       uses: gimlet-io/gimlet-artifact-shipper-action@v0.8.2
       env:
