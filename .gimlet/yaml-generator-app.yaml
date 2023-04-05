@@ -17,6 +17,8 @@ values:
       kubernetes.io/ingress.class: nginx
     host: yaml-generator.gimlet.io
     tlsEnabled: true
+  probe:
+    enabled: true
 strategicMergePatches: ""
 json6902Patches: []
 manifests: ""
