@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
@@ -48,15 +47,8 @@ func yamlGenerator(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	manifestString, err := yaml.Marshal(rel.Manifest)
-	if err != nil {
-		logrus.Errorf("couldn't marshal manifest", err)
-		http.Error(w, http.StatusText(500), 500)
-		return
-	}
-
 	w.WriteHeader(200)
-	w.Write(manifestString)
+	w.Write([]byte(rel.Manifest))
 }
 
 func helmClient(chart *Chart) (*action.Install, *helmCLI.EnvSettings) {
