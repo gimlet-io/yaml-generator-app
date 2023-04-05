@@ -19,6 +19,9 @@ values:
     tlsEnabled: true
   probe:
     enabled: true
+  resources:
+    limits:
+      cpu: 1000m
 strategicMergePatches: ""
 json6902Patches: []
 manifests: ""
