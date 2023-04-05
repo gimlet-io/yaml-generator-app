@@ -17,6 +17,9 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+	})
 	r.Post("/", yamlGenerator)
 
 	err := http.ListenAndServe(":9000", r)
