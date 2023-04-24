@@ -30,7 +30,7 @@ func yamlGenerator(w http.ResponseWriter, r *http.Request) {
 	onechart := Chart{
 		Repository: "https://chart.onechart.dev",
 		Name:       "onechart",
-		Version:    "0.41.0",
+		Version:    "0.46.0",
 	}
 	client, settings := helmClient(&onechart)
 	chart, err := loadChart(&onechart, client, settings)
@@ -56,7 +56,7 @@ func helmClient(chart *Chart) (*action.Install, *helmCLI.EnvSettings) {
 	client := action.NewInstall(actionConfig)
 
 	client.DryRun = true
-	client.ReleaseName = "release-name"
+	client.ReleaseName = "my-release"
 	client.Replace = true
 	client.ClientOnly = true
 	client.APIVersions = []string{}
