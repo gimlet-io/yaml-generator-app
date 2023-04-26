@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gimlet-io/yaml-generator-app/cmd/config"
 	"github.com/sirupsen/logrus"
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
@@ -12,13 +13,9 @@ import (
 	helmCLI "helm.sh/helm/v3/pkg/cli"
 )
 
-type Chart struct {
-	Repository string `yaml:"repository" json:"repository"`
-	Name       string `yaml:"name" json:"name"`
-	Version    string `yaml:"version" json:"version"`
-}
-
 func yamlGenerator(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	config := ctx.Value("config").(*config.Config)
 	var values map[string]interface{}
 	err := json.NewDecoder(r.Body).Decode(&values)
 	if err != nil {
@@ -27,13 +24,8 @@ func yamlGenerator(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	onechart := Chart{
-		Repository: "https://chart.onechart.dev",
-		Name:       "onechart",
-		Version:    "0.46.0",
-	}
-	client, settings := helmClient(&onechart)
-	chart, err := loadChart(&onechart, client, settings)
+	client, settings := helmClient(&config.Chart)
+	chart, err := loadChart(&config.Chart, client, settings)
 	if err != nil {
 		logrus.Errorf("couldn't load chart", err)
 		http.Error(w, http.StatusText(500), 500)
@@ -51,7 +43,7 @@ func yamlGenerator(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(rel.Manifest))
 }
 
-func helmClient(chart *Chart) (*action.Install, *helmCLI.EnvSettings) {
+func helmClient(chart *config.Chart) (*action.Install, *helmCLI.EnvSettings) {
 	actionConfig := new(action.Configuration)
 	client := action.NewInstall(actionConfig)
 
@@ -61,7 +53,7 @@ func helmClient(chart *Chart) (*action.Install, *helmCLI.EnvSettings) {
 	client.ClientOnly = true
 	client.APIVersions = []string{}
 	client.IncludeCRDs = false
-	client.ChartPathOptions.RepoURL = chart.Repository
+	client.ChartPathOptions.RepoURL = chart.Repo
 	client.ChartPathOptions.Version = chart.Version
 	client.Namespace = "default"
 
@@ -69,7 +61,7 @@ func helmClient(chart *Chart) (*action.Install, *helmCLI.EnvSettings) {
 	return client, settings
 }
 
-func loadChart(chart *Chart, client *action.Install, settings *helmCLI.EnvSettings) (*chart.Chart, error) {
+func loadChart(chart *config.Chart, client *action.Install, settings *helmCLI.EnvSettings) (*chart.Chart, error) {
 	cp, err := client.ChartPathOptions.LocateChart(chart.Name, settings)
 	if err != nil {
 		return nil, fmt.Errorf("cannot locate chart %s", err)
