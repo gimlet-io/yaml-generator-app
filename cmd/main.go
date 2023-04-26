@@ -4,14 +4,26 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gimlet-io/yaml-generator-app/cmd/config"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
 )
 
 func main() {
 	fmt.Println("App init..")
+
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Warnf("could not load .env file, relying on env vars")
+	}
+
+	config, err := config.Environ()
+	if err != nil {
+		log.Fatalln("main: invalid configuration")
+	}
 
 	r := chi.NewRouter()
 
@@ -28,12 +40,13 @@ func main() {
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(middleware.WithValue("config", config))
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 	})
 	r.Post("/", yamlGenerator)
 
-	err := http.ListenAndServe(":9000", r)
+	err = http.ListenAndServe(":9000", r)
 	log.Error(err)
 }
