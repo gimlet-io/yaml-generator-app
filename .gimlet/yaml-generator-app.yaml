@@ -19,6 +19,7 @@ values:
     tlsEnabled: true
   probe:
     enabled: true
+  replicas: 2
   resources:
     limits:
       cpu: 1000m
