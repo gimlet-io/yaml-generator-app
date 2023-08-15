@@ -23,18 +23,19 @@ func yamlGenerator(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(400), 400)
 		return
 	}
+	logrus.Infof("%s", values)
 
 	client, settings := helmClient(&config.Chart)
 	chart, err := loadChart(&config.Chart, client, settings)
 	if err != nil {
-		logrus.Errorf("couldn't load chart", err)
+		logrus.Errorf("couldn't load chart: %s", err)
 		http.Error(w, http.StatusText(500), 500)
 		return
 	}
 
 	rel, err := client.Run(chart, values)
 	if err != nil {
-		logrus.Errorf("couldn't template values", err)
+		logrus.Errorf("couldn't template values: %s", err)
 		http.Error(w, http.StatusText(500), 500)
 		return
 	}

@@ -24,7 +24,7 @@ func defaults(c *Config) {
 		c.Chart.Repo = "https://chart.onechart.dev"
 	}
 	if c.Chart.Version == "" {
-		c.Chart.Version = "0.46.0"
+		c.Chart.Version = "0.52.0"
 	}
 }
 
