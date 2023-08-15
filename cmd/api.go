@@ -1,12 +1,14 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/gimlet-io/yaml-generator-app/cmd/config"
 	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
@@ -23,7 +25,12 @@ func yamlGenerator(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(400), 400)
 		return
 	}
-	logrus.Infof("%s", values)
+
+	var valuesString bytes.Buffer
+	yamlEncoder := yaml.NewEncoder(&valuesString)
+	yamlEncoder.SetIndent(2)
+	yamlEncoder.Encode(&values)
+	logrus.Infof("%s", valuesString.String())
 
 	client, settings := helmClient(&config.Chart)
 	chart, err := loadChart(&config.Chart, client, settings)
