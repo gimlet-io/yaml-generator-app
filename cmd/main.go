@@ -46,6 +46,7 @@ func main() {
 		w.WriteHeader(200)
 	})
 	r.Post("/", yamlGenerator)
+	r.Post("/chart/{chart}", yamlGeneratorWithChart)
 
 	err = http.ListenAndServe(":9000", r)
 	log.Error(err)
