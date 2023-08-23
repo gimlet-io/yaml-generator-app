@@ -9,7 +9,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-const DEFAULT_CHARTS = "name=onechart,repo=https://chart.onechart.dev,version=0.53.0;name=static-site,repo=https://chart.onechart.dev,version=0.53.0;name=cron-job,repo=https://chart.onechart.dev,version=0.53.0"
+const DEFAULT_CHARTS = "name=onechart,repo=https://chart.onechart.dev,version=0.57.0;name=static-site,repo=https://chart.onechart.dev,version=0.57.0;name=cron-job,repo=https://chart.onechart.dev,version=0.57.0"
 
 // Environ returns the settings from the environment.
 func Environ() (*Config, error) {
