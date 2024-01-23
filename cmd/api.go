@@ -46,6 +46,20 @@ func yamlGenerator(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(rel.Manifest))
 }
 
+func feedback(w http.ResponseWriter, r *http.Request) {
+	var values map[string]interface{}
+	err := json.NewDecoder(r.Body).Decode(&values)
+	if err != nil {
+		logrus.Errorf("cannot decode values: %s", err)
+		http.Error(w, http.StatusText(400), 400)
+		return
+	}
+	logrus.Infof("feedback: %s", values)
+
+	w.WriteHeader(200)
+	w.Write([]byte("{}"))
+}
+
 func yamlGeneratorWithChart(w http.ResponseWriter, r *http.Request) {
 	chartFromUrlParam := chi.URLParam(r, "chart")
 	if chartFromUrlParam == "" {
